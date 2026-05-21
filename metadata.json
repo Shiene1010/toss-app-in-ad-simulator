@@ -1,0 +1,6 @@
+{
+  "name": "Toss App-in-Ad Simulator",
+  "description": "토스 앱인애드(App-in-Ad) 웹앱 업로드 테스트용 헬로우월드 샘플 애플리케이션",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
