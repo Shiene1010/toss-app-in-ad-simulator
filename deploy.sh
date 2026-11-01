@@ -40,11 +40,24 @@ TIMESTAMP=$(date +%Y%m%d%H%M%S)
 ARCHIVE_NAME="${PROJECT_NAME}-test-bundle-${TIMESTAMP}.zip"
 ARCHIVE_PATH="${WORKSPACE}/${ARCHIVE_NAME}"
 
-# 4. dist/ 폴더 압축 (압축은 -q 로 정숙하게, 실제 업로드는 별도 단계)
+# 4. app.json과 index.html을 최상위 depth에 포함하여 아카이브 생성
+# - AIT 규격: app.json과 index.html은 동일한 최상위 디렉터리 depth에 있어야 함
+# - 앱 진입점인 index.html은 dist/에서 root level로 복사하여 함께 패키징
 echo "▶ ${ARCHIVE_NAME} 생성 중..."
-cd "$WORKSPACE/dist"
+# 일회용 디렉터리에 앱 매니페스트와 리소스 정리하여 압축
+BUNDLE_TMP=$(mktemp -d)
+# 앱 매니페스트 포함
+cp "$WORKSPACE/app.json" "$BUNDLE_TMP/"
+# Vite 빌드 산출물에서 진입점 index.html을 최상위로 복사
+cp "$WORKSPACE/dist/index.html" "$BUNDLE_TMP/index.html"
+# 어셋 디렉터리 그대로 복사 (압축 내에서 assets/ 경로 유지)
+cp -r "$WORKSPACE/dist/assets/" "$BUNDLE_TMP/assets/"
+# 한 디렉터리에서 재귀 압축 (app.json과 index.html이 동일한 depth에 생성됨)
+cd "$BUNDLE_TMP"
 zip -r -q "$ARCHIVE_PATH" .
 cd "$WORKSPACE"
+# 일회용 디렉터리 정리
+rm -rf "$BUNDLE_TMP"
 
 echo "✅ 아카이브 생성: ${ARCHIVE_PATH}"
 echo "   크기: $(du -h "$ARCHIVE_PATH" | cut -f1)"

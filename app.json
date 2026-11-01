@@ -1,0 +1,10 @@
+{
+  "appName": "ad-simulator",
+  "name": "adsimul",
+  "entry": "index.html",
+  "version": "0.0.0",
+  "bundleFiles": [
+    "index.html",
+    "assets/"
+  ]
+}
